@@ -39,22 +39,36 @@ app.get('/api/recipes', async (req, res) => {
             }
         );
 
-        let recipes = response.data;
+        const originalMap = {};
+        response.data.forEach(r => { originalMap[r.id] = r; });
 
-        // Filter by cuisine if requested
-        if (cuisine.length) {
-            // Fetch recipe info in parallel
-            const detailPromises = recipes.map(recipe =>
-                axios.get(`https://api.spoonacular.com/recipes/${recipe.id}/information`, { params: { apiKey } })
-            );
+        // Fetch recipe details in parallel
+        const detailPromises = response.data.map(recipe =>
+            axios.get(`https://api.spoonacular.com/recipes/${recipe.id}/information`, { params: { apiKey } })
+        );
+        const details = await Promise.all(detailPromises);
 
-            const details = await Promise.all(detailPromises);
+        // Combine used/missed ingredients and mark cuisine matches
+        let recipes = details.map(detail => {
+            const info = detail.data;
+            const original = originalMap[info.id];
+            const matchesCuisine = cuisine.length
+                ? info.cuisines.some(c => cuisine.includes(c.toLowerCase()))
+                : true;
 
-            recipes = details
-                .map(detail => detail.data)
-                .filter(info => info.cuisines.some(c => cuisine.includes(c.toLowerCase())))
-                .slice(0, number); // only return requested number
-        }
+            return {
+                ...info,
+                usedIngredients: original?.usedIngredients || [],
+                missedIngredients: original?.missedIngredients || [],
+                matchesCuisine
+            };
+        });
+
+        // Sort recipes so matching cuisine are listed first
+        recipes.sort((a, b) => (b.matchesCuisine === true) - (a.matchesCuisine === true));
+
+        // Return only the top N requested
+        recipes = recipes.slice(0, number);
 
         res.json(recipes);
 
