@@ -226,3 +226,29 @@ h1 {
     gap: 12px;
   }
 }
+
+.sub-btn {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-left: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.2s ease;
+}
+
+.sub-btn:hover {
+  background-color: #4a90e2;
+  color: white;
+  border-color: #4a90e2;
+}
+
+.subs-list {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #2d3436;
+  list-style: disc;
+  padding-left: 20px;
+}
