@@ -97,24 +97,22 @@ function App() {
   return (
     <div>
       <h1>Leftover Recipe Finder</h1>
+      <div className="search-bar">
+        <input
+          type="text"
+          value={ingredients}
+          onChange={e => setIngredients(e.target.value)}
+          placeholder="Enter ingredients, comma-separated"
+        />
 
-      <input
-        type="text"
-        value={ingredients}
-        onChange={e => setIngredients(e.target.value)}
-        placeholder="Enter ingredients, comma-separated"
-      />
-
-      <select value={cuisine} onChange={e => setCuisine(e.target.value)}>
-        <option value="">Any cuisine</option>
-        {cuisineOptions.map((c, index) => (
-          <option key={index} value={c}>{c}</option>
-        ))}
-      </select>
-
-
-
-      <button onClick={handleSearch}>Search</button>
+        <select value={cuisine} onChange={e => setCuisine(e.target.value)}>
+          <option value="">Any cuisine</option>
+          {cuisineOptions.map((c, index) => (
+            <option key={index} value={c}>{c}</option>
+          ))}
+        </select>
+        <button onClick={handleSearch}>Search</button>
+      </div>
 
       <div className="recipe-container">
         {recipes.length > 0 ? (

@@ -11,7 +11,6 @@ function RecipeCard({ recipe }) {
 
 
     // Fetch substitutions for a specific ingredient
-    // ✅ Fetch substitutions for a specific ingredient
     const fetchSubstitutions = async (ingredient) => {
         setLoadingSubs((prev) => ({ ...prev, [ingredient]: true }));
 
@@ -21,21 +20,19 @@ function RecipeCard({ recipe }) {
             );
 
             if (res.status === 200 && res.data?.substitutes) {
-                // 🧠 Clean and simplify substitutes (remove measurements & phrases)
                 const cleanSubs =
                     res.data.substitutes
                         ?.map((s) =>
                             s
-                                .replace(/.*=\s*/g, "") // remove "1 cup = " etc.
+                                .replace(/.*=\s*/g, "")
                                 .replace(
                                     /\b\d+\s*(cup|tbsp|tsp|oz|grams?|ml|cups?|tablespoons?|teaspoons?)\b/gi,
                                     ""
-                                ) // remove units
+                                )
                                 .trim()
                         )
                         .filter((s) => s.length > 0) || [];
 
-                // ✅ Optional: remove duplicates and normalize case
                 const uniqueSubs = [...new Set(cleanSubs.map((s) => s.trim()))];
 
                 setSubs((prev) => ({
