@@ -7,6 +7,8 @@ function RecipeCard({ recipe }) {
 
     const [subs, setSubs] = useState({});
     const [loadingSubs, setLoadingSubs] = useState({});
+    const [openSubs, setOpenSubs] = useState({});
+
 
     // Fetch substitutions for a specific ingredient
     // ✅ Fetch substitutions for a specific ingredient
@@ -98,6 +100,7 @@ function RecipeCard({ recipe }) {
                             {missedIngredients.map((ing) => (
                                 <li key={ing.id}>
                                     {ing.name}
+                                    {/*
                                     <button
                                         onClick={() => fetchSubstitutions(ing.name)}
                                         disabled={loadingSubs[ing.name]}
@@ -105,9 +108,29 @@ function RecipeCard({ recipe }) {
                                     >
                                         {loadingSubs[ing.name] ? "..." : "Find Substitute"}
                                     </button>
+                                    */}
+                                    {/*Toggle functionality for Find substitute button*/}
+                                    <button
+                                        onClick={() => {
+                                        // If already open, close it
+                                        if (openSubs[ing.name]) {
+                                        setOpenSubs(prev => ({ ...prev, [ing.name]: false }));
+                                        return;
+                                        }
+
+                                        // If closed, fetch and open
+                                        fetchSubstitutions(ing.name);
+                                        setOpenSubs(prev => ({ ...prev, [ing.name]: true }));
+                                        }}
+                                    disabled={loadingSubs[ing.name]}
+                                    className="sub-btn"
+                                    >
+                                        {openSubs[ing.name] ? "Hide Substitute" : "Find Substitute"}
+                                    </button>
+
 
                                     {/* Substitutions List */}
-                                    {subs[ing.name] && (
+                                    {openSubs[ing.name] && subs[ing.name] && (
                                         <ul className="subs-list">
                                             {subs[ing.name].map((s, i) => (
                                                 <li key={i}>{s}</li>
