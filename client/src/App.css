@@ -38,11 +38,12 @@
   }
 }
 */
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Gloock&display=swap');
 
 /* Base CSS*/
 body {
-  font-family: "Gloock", serif;
+  font-family: "Figtree", sans-serif;
   margin: 0;
   padding: 0;
   background-color: #F3E5C3;
@@ -51,6 +52,7 @@ body {
 
 /* HEADERS */
 h1 {
+  font-family: "Gloock", serif;
   text-align: center;
   margin-top: 40px;
   font-size: 36px;
@@ -149,6 +151,7 @@ h1 {
   font-size: 18px;
   color: #2d3436;
   margin-bottom: 8px;
+  padding: 15px 16px 16px;
 }
 
 .cuisine {
@@ -164,12 +167,15 @@ h1 {
 }
 
 /* INGREDIENT SECTIONS */
+.ingredient-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
 .ingredient-section {
-  text-align: left;
-  background-color: #FDF6EB;
-  border-radius: 8px;
-  padding: 10px;
-  margin-top: 10px;
+  margin-bottom: 14px;
 }
 
 .ingredient-section h4 {
@@ -187,14 +193,15 @@ h1 {
 .ingredient-section li {
   font-size: 13px;
   color: #636e72;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 }
+
 
 .missed h4 {
   color: #E63946;
 }
 
-/* VIEW RECIPE LINK */
+/* VIEW RECIPE LINK BUTTON */
 .recipe-info a {
   display: inline-block;
   margin-top: 12px;
@@ -212,7 +219,7 @@ h1 {
   background-color: #5c6b46;
 }
 
-/* GRID */
+/* GRID FOR RECIPE CARDS */
 @media (max-width: 900px) {
   .recipe-card {
     width: 240px;
@@ -232,15 +239,12 @@ h1 {
 }
 
 .sub-btn {
-  background-color: #f5f5f5;
-  color: #3A2F2A;
-  border: 1px solid #c9b89f;
+  padding: 4px 10px;
+  font-size: 11px;
   border-radius: 6px;
-  margin-left: 8px;
-  padding: 4px 8px;
+  background-color: #faf4e8;
+  border: 1px solid #d3c3a8;
   cursor: pointer;
-  font-size: 12px;
-  transition: all 0.2s ease;
 }
 
 .sub-btn:hover {
@@ -250,9 +254,13 @@ h1 {
 }
 
 .subs-list {
-  margin-top: 4px;
+  margin-top: 6px;
+  margin-left: 4px;
+  padding-left: 16px;
+  background-color: #faf4e8;
+  border-radius: 6px;
+  padding: 8px;
   font-size: 13px;
   color: #3A2F2A;
   list-style: disc;
-  padding-left: 20px;
 }

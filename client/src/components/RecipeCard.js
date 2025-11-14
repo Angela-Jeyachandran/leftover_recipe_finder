@@ -96,16 +96,9 @@ function RecipeCard({ recipe }) {
                         <ul>
                             {missedIngredients.map((ing) => (
                                 <li key={ing.id}>
+                                <div className="ingredient-row">
                                     {ing.name}
-                                    {/*
-                                    <button
-                                        onClick={() => fetchSubstitutions(ing.name)}
-                                        disabled={loadingSubs[ing.name]}
-                                        className="sub-btn"
-                                    >
-                                        {loadingSubs[ing.name] ? "..." : "Find Substitute"}
-                                    </button>
-                                    */}
+                        
                                     {/*Toggle functionality for Find substitute button*/}
                                     <button
                                         onClick={() => {
@@ -124,6 +117,7 @@ function RecipeCard({ recipe }) {
                                     >
                                         {openSubs[ing.name] ? "Hide Substitute" : "Find Substitute"}
                                     </button>
+                                    </div>
 
 
                                     {/* Substitutions List */}
