@@ -3,6 +3,8 @@ const express = require('express');
 const app = express();
 const axios = require('axios');
 const cors = require('cors');
+const subsCache = {};
+const recipeCache = {};
 app.use(cors());
 
 
@@ -38,11 +40,18 @@ app.get('/api/recipes', async (req, res) => {
     const number = parseInt(req.query.number) || 3;
     const cuisine = req.query.cuisine ? req.query.cuisine.split(',').map(c => c.toLowerCase()) : [];
     const apiKey = process.env.API_KEY;
+    const cacheKey = `${ingredients}|${number}|${cuisine.join(",")}`;
+
+    if (recipeCache[cacheKey]) {
+    console.log("Using cached recipes:", cacheKey);
+    return res.json(recipeCache[cacheKey]);
+}
 
     if (!ingredients) return res.status(400).json({ error: 'Please provide ingredients' });
 
     try {
         // Fetch recipes by ingredients
+        /*
         const response = await axios.get(
             'https://api.spoonacular.com/recipes/findByIngredients',
             {
@@ -80,6 +89,39 @@ app.get('/api/recipes', async (req, res) => {
                 matchesCuisine
             };
         });
+        */
+        // Reduces API calls
+        const response = await axios.get(
+            'https://api.spoonacular.com/recipes/findByIngredients',
+            {
+                params: {
+                    ingredients,
+                    number,
+                    ranking: 1,
+                    ignorePantry: true,
+                    metaInformation: true,   // ⭐ important
+                    apiKey
+                }
+            }
+        );
+
+        let recipes = response.data.map(r => ({
+            id: r.id,
+            title: r.title,
+            image: r.image,
+            cuisines: r.cuisines || [],
+            dishTypes: r.dishTypes || [],
+            readyInMinutes: r.readyInMinutes || 0,
+            usedIngredients: r.usedIngredients || [],
+            missedIngredients: r.missedIngredients || [],
+
+            matchesCuisine:
+                cuisine.length === 0 ||
+                (r.cuisines || []).some(c =>
+                    cuisine.includes(c.toLowerCase())
+                )
+        }));
+
 
         // Sort recipes so matching cuisine are listed first
         recipes.sort((a, b) => (b.matchesCuisine === true) - (a.matchesCuisine === true));
@@ -97,6 +139,8 @@ app.get('/api/recipes', async (req, res) => {
         // Return only the top N requested
         recipes = recipes.slice(0, number);
 
+        recipeCache[cacheKey] = recipes;
+
         res.json(recipes);
 
     } catch (err) {
@@ -104,6 +148,7 @@ app.get('/api/recipes', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch recipes' });
     }
 });
+
 
 // Substitutions endpoint
 app.get('/api/substitutions', async (req, res) => {
@@ -132,6 +177,12 @@ app.get('/api/substitutions', async (req, res) => {
     try {
         // Return fallback immediately if found
         const lower = ingredient.toLowerCase();
+
+        if (subsCache[lower]) {
+            console.log("Using cached substitute:", lower);
+            return res.json({ ingredient, substitutes: subsCache[lower] });
+        }
+
         if (defaultSubs[lower]) {
             return res.json({ ingredient, substitutes: defaultSubs[lower] });
         }
@@ -148,6 +199,8 @@ app.get('/api/substitutions', async (req, res) => {
                 substitutes: [`No known substitutes for ${ingredient}`],
             });
         }
+
+        subsCache[lower] = response.data.substitutes;
 
         res.json(response.data);
 
