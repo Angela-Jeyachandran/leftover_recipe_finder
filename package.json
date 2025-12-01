@@ -24,6 +24,7 @@
     "axios": "^1.13.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "react-router-dom": "^7.9.6"
   }
 }
