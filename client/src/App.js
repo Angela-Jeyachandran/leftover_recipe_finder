@@ -1,4 +1,4 @@
-/*import React from "react";
+import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import Home from "./Home";
@@ -15,11 +15,5 @@ function App() {
 
 export default App;
 
-*/
 
-function App() {
-    return <h1>APP LOADED</h1>;
-}
-
-export default App;
 
