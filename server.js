@@ -50,20 +50,28 @@ app.get('/api/recipes', async (req, res) => {
             .trim();
     }
 
+    /* Basic Ingredients */
+    const pantry = ["salt", "pepper", "oil", "water"];
+
     const cleanIngredients = ingredients
         .split(",")
         .map(normalizeIngredient)
-        .filter(Boolean)
-        .join(",");
+        .filter(Boolean);
 
-    const cacheKey = `${cleanIngredients}|${number}|${cuisine.join(",")}`;
+    // Remove duplicates from cleaned input
+    const ingSet = [...new Set(cleanIngredients)];
+
+    // Add pantry staples + dedupe again
+    const finalIngredients = [...new Set([...ingSet, ...pantry])].join(",");
+
+    const cacheKey = `${finalIngredients}|${number}|${cuisine.join(",")}`;
 
     if (recipeCache[cacheKey]) {
     console.log("Using cached recipes:", cacheKey);
     return res.json(recipeCache[cacheKey]);
 }
 
-    if (!cleanIngredients) return res.status(400).json({ error: 'Please provide ingredients' });
+    if (!finalIngredients) return res.status(400).json({ error: 'Please provide ingredients' });
 
     try {
         // Reduces API calls
@@ -71,7 +79,7 @@ app.get('/api/recipes', async (req, res) => {
             'https://api.spoonacular.com/recipes/findByIngredients',
             {
                 params: {
-                    ingredients: cleanIngredients,
+                    ingredients: finalIngredients,
                     number,
                     ranking: 1,
                     ignorePantry: true,
@@ -99,8 +107,19 @@ app.get('/api/recipes', async (req, res) => {
         }));
 
 
-        // Sort recipes so matching cuisine are listed first
-        recipes.sort((a, b) => (b.matchesCuisine === true) - (a.matchesCuisine === true));
+        // Sort recipes based on percent match of used ingredients
+        recipes.sort((a, b) => {
+            const scoreA = a.usedIngredients.length - a.missedIngredients.length;
+            const scoreB = b.usedIngredients.length - b.missedIngredients.length;
+            
+            // If score is tied, fallback to cuisine preference
+            if (scoreB === scoreA) {
+                return (b.matchesCuisine === true) - (a.matchesCuisine === true);
+            }
+            
+            return scoreB - scoreA;
+        });
+
 
         /* Remove duplicates by recipe title
         const seen = new Set();
