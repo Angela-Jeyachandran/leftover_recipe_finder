@@ -40,66 +40,42 @@ app.get('/api/recipes', async (req, res) => {
     const number = parseInt(req.query.number) || 3;
     const cuisine = req.query.cuisine ? req.query.cuisine.split(',').map(c => c.toLowerCase()) : [];
     const apiKey = process.env.API_KEY;
-    const cacheKey = `${ingredients}|${number}|${cuisine.join(",")}`;
+
+    /* Normalizes ingredient names by removing symbols and collapsing spaces */
+    function normalizeIngredient(name) {
+        return name
+            .toLowerCase()
+            .replace(/[^a-z\s]/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+    }
+
+    const cleanIngredients = ingredients
+        .split(",")
+        .map(normalizeIngredient)
+        .filter(Boolean)
+        .join(",");
+
+    const cacheKey = `${cleanIngredients}|${number}|${cuisine.join(",")}`;
 
     if (recipeCache[cacheKey]) {
     console.log("Using cached recipes:", cacheKey);
     return res.json(recipeCache[cacheKey]);
 }
 
-    if (!ingredients) return res.status(400).json({ error: 'Please provide ingredients' });
+    if (!cleanIngredients) return res.status(400).json({ error: 'Please provide ingredients' });
 
     try {
-        // Fetch recipes by ingredients
-        /*
-        const response = await axios.get(
-            'https://api.spoonacular.com/recipes/findByIngredients',
-            {
-                params: {
-                    ingredients: ingredients,
-                    number,
-                    ranking: 1,
-                    ignorePantry: true,
-                    apiKey
-                }
-            }
-        );
-
-        const originalMap = {};
-        response.data.forEach(r => { originalMap[r.id] = r; });
-
-        // Fetch recipe details in parallel
-        const detailPromises = response.data.map(recipe =>
-            axios.get(`https://api.spoonacular.com/recipes/${recipe.id}/information`, { params: { apiKey } })
-        );
-        const details = await Promise.all(detailPromises);
-
-        // Combine used/missed ingredients and mark cuisine matches
-        let recipes = details.map(detail => {
-            const info = detail.data;
-            const original = originalMap[info.id];
-            const matchesCuisine = cuisine.length
-                ? info.cuisines.some(c => cuisine.includes(c.toLowerCase()))
-                : true;
-
-            return {
-                ...info,
-                usedIngredients: original?.usedIngredients || [],
-                missedIngredients: original?.missedIngredients || [],
-                matchesCuisine
-            };
-        });
-        */
         // Reduces API calls
         const response = await axios.get(
             'https://api.spoonacular.com/recipes/findByIngredients',
             {
                 params: {
-                    ingredients,
+                    ingredients: cleanIngredients,
                     number,
                     ranking: 1,
                     ignorePantry: true,
-                    metaInformation: true,   // ⭐ important
+                    metaInformation: true,  
                     apiKey
                 }
             }
