@@ -14,7 +14,7 @@ This guide explains how to **run and use the application**.
 For architectural details, code walkthroughs, and implementation notes, see
 the **Developer Guide**.
 
-👉 [Developer Guide](./developer_guide.md)
+[Developer Guide](./developer_guide.md)
 
 ---
 
@@ -215,6 +215,8 @@ http://localhost:3000
 ![Recipe Results](./screenshots/results.png)
 
 6. To view substitutions click on **find substitute** (to close click **hide substitute**)
+
+![Substitutions](./screenshots/sub.png)
 
 ---
 
