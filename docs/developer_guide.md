@@ -1,4 +1,5 @@
 # Leftover Recipe Application  
+
 ## Developer Guide (Programmer’s Documentation)
 
 ---
