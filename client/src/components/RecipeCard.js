@@ -1,16 +1,41 @@
+/**
+ * RecipeCard.js
+ *
+ * Presentation component responsible for displaying a single recipe.
+ * Renders recipe metadata, ingredient lists, and provides optional
+ * ingredient substitution suggestions via the backend API.
+ *
+ * This component is UI-focused and does not manage global application state.
+ */
+
 import React, { useState } from "react";
 import axios from "axios";
 
-
+/**
+ * RecipeCard
+ *
+ * Displays a recipe card including title, image, cuisine, cook time,
+ * used ingredients, missing ingredients, and a button to fetch
+ * substitution suggestions for missing items.
+ *
+ * @param {Object} props
+ * @param {Object} props.recipe - Recipe object returned from backend API
+ */
 function RecipeCard({ recipe }) {
     const { title, image, cuisines, readyInMinutes, usedIngredients, missedIngredients, sourceUrl } = recipe;
 
+    // Stores fetched substitution lists per ingredient
     const [subs, setSubs] = useState({});
+    // Tracks loading state for each ingredient's substitution request
     const [loadingSubs, setLoadingSubs] = useState({});
+    // Tracks whether substitution list is expanded per ingredient
     const [openSubs, setOpenSubs] = useState({});
 
 
-    // Fetch substitutions for a specific ingredient
+    /**
+     * Fetch substitutions for a specific ingredient from the backend API.
+     * Cleans and de-duplicates results before storing them in local state.
+     */
     const fetchSubstitutions = async (ingredient) => {
         setLoadingSubs((prev) => ({ ...prev, [ingredient]: true }));
 
@@ -18,7 +43,7 @@ function RecipeCard({ recipe }) {
             const res = await axios.get(
                 `http://localhost:5001/api/substitutions?ingredient=${ingredient}`
             );
-
+            // Clean substitution strings by removing quantities and metadata
             if (res.status === 200 && res.data?.substitutes) {
                 const cleanSubs =
                     res.data.substitutes
