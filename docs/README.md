@@ -181,9 +181,14 @@ http://localhost:3000
 
 ### Home Page
 
+![Home Page](./screenshots/home.png)
+
 * Click **Start Cooking** to begin
 
+
 ### Recipe Search Page
+
+![Recipe Search](./screenshots/search.png)
 
 1. Enter ingredients separated by commas
    Example:
@@ -191,13 +196,25 @@ http://localhost:3000
    chicken, garlic, rice
    ```
 
+![Ingredients](./screenshots/ingredient.png)
+
 2. (Optional) Select a cuisine from the dropdown
+
+![Cuisines](./screenshots/cuisine.png)
 
 3. Choose how many recipes to return (3–12)
 
+![Number of Recipes](./screenshots/number.png)
+
 4. Click **Search**
 
-Recipes will appear as cards below the search bar.
+![Search Button](./screenshots/searchBtn.png)
+
+5. Recipes will appear as cards below the search bar.
+
+![Recipe Results](./screenshots/results.png)
+
+6. To view substitutions click on **find substitute** (to close click **hide substitute**)
 
 ---
 
@@ -206,6 +223,7 @@ Recipes will appear as cards below the search bar.
 - **Recipes do not load**
   - Ensure the backend server is running on port 5001
   - Check that your `.env` file contains a valid API key
+  - Make sure all of the dependencies are installed
 
 - **API request errors**
   - Spoonacular API rate limits may temporarily block requests
@@ -228,8 +246,7 @@ Recipes will appear as cards below the search bar.
 client/        # React frontend
 server.js      # Express backend
 docs/          # User and developer documentation
-archive/       # Archived experiments
-tools/         # Utility scripts (non-runtime)
+archive/       # Archived documents
 
 
 ---
