@@ -1,18 +1,37 @@
+/**
+ * RecipesPage.js
+ *
+ * Primary interaction page for the Leftover Recipe Application.
+ *
+ * This component allows the user to:
+ *  - Enter a list of available ingredients
+ *  - Optionally select a cuisine preference
+ *  - Specify how many recipes to return
+ *  - Fetch and view ranked recipe results from the backend API
+ *
+ * This page communicates directly with the Express backend
+ * via the /api/recipes endpoint.
+ */
+
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import RecipeCard from "./components/RecipeCard";
 import "./App.css";
 
 
-
-
 function RecipesPage() {
+  // -----------------------------
+  // Component state
+  // -----------------------------
   const [ingredients, setIngredients] = useState('');
   const [recipes, setRecipes] = useState([]);
   const [cuisine, setCuisine] = useState('');
   const [recipeCount, setRecipeCount] = useState(3);
 
-
+  // -----------------------------
+  // Cuisine dropdown options
+  // -----------------------------
   const cuisineOptions = [
     "African", "American", "British", "Cajun", "Caribbean", "Chinese",
     "Eastern European", "European", "French", "German", "Greek", "Indian",
@@ -21,6 +40,20 @@ function RecipesPage() {
     "Spanish", "Thai", "Vietnamese"
   ]
 
+  // -----------------------------
+  // Fetch recipes from backend
+  // -----------------------------
+  /**
+   * Sends user input to the backend API and updates recipe results.
+   *
+   * Backend endpoint:
+   *   GET /api/recipes
+   *
+   * Query parameters:
+   *   - ingredients: comma-separated string
+   *   - cuisine: optional cuisine preference
+   *   - number: number of recipes desired
+   */
   const handleSearch = async () => {
     try {
       const response = await axios.get(
@@ -32,8 +65,13 @@ function RecipesPage() {
     }
   };
 
+  // -----------------------------
+  // NOTE: Placeholder recipe data (archived)
+  // -----------------------------
+  // This block was used early in development to test UI rendering
+  // before backend integration was complete.
+  // It is intentionally preserved for reference.
   /*
-
   useEffect(() => {
     const defaultRecipes = [
       {
@@ -88,14 +126,9 @@ function RecipesPage() {
         sourceUrl: "#",
       },
     ];
-
-
-
-
     setRecipes(defaultRecipes);
   }, []);
-
-   */
+  */
 
   return (
     <div>
