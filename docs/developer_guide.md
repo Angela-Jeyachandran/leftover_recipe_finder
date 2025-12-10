@@ -1,4 +1,4 @@
-# Leftover Recipe Application  
+# Leftover Recipe Finder Application  
 
 ## Developer Guide (Programmer’s Documentation)
 
