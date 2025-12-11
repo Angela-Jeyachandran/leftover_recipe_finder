@@ -111,7 +111,7 @@ app.get('/api/recipes', async (req, res) => {
     // Pantry staples (always included)
     // -----------------------------
     // GOTCHA: Including pantry helps matching but can slightly skew scoring
-    const pantry = ["salt", "pepper", "oil", "water"];
+    const pantry = ["salt", "oil"];
 
     // -----------------------------
     // Clean and deduplicate ingredients
@@ -132,9 +132,9 @@ app.get('/api/recipes', async (req, res) => {
     const cacheKey = `${finalIngredients}|${number}|${cuisine.join(",")}`;
 
     if (recipeCache[cacheKey]) {
-    console.log("Using cached recipes:", cacheKey);
-    return res.json(recipeCache[cacheKey]);
-}
+        console.log("Using cached recipes:", cacheKey);
+        return res.json(recipeCache[cacheKey]);
+    }
 
     if (!finalIngredients) return res.status(400).json({ error: 'Please provide ingredients' });
 
@@ -172,9 +172,22 @@ app.get('/api/recipes', async (req, res) => {
                 cuisine.length === 0 ||
                 (r.cuisines || []).some(c =>
                     cuisine.includes(c.toLowerCase())
-                )
+                ),
+            sourceUrl: null
         }));
 
+        // Fetch full details to get sourceUrl
+        for (let recipe of recipes) {
+            try {
+                const detail = await axios.get(
+                    `https://api.spoonacular.com/recipes/${recipe.id}/information`,
+                    { params: { apiKey } }
+                );
+                recipe.sourceUrl = detail.data.sourceUrl || "#";
+            } catch {
+                recipe.sourceUrl = "#";
+            }
+        }
 
         // -----------------------------
         // Rank recipes
