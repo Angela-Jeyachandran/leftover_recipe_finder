@@ -100,7 +100,7 @@ function RecipeCard({ recipe }) {
                     <p className="cuisine">{cuisines.join(", ")}</p>
                 )}
 
-                <p>Ready in {readyInMinutes} minutes</p>
+                {/*<p>Ready in {readyInMinutes} minutes</p>*/}
 
                 {/* Used ingredients */}
                 {usedIngredients && usedIngredients.length > 0 && (
