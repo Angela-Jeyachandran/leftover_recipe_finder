@@ -23,7 +23,7 @@ import "./App.css";
 function Home() {
     return (
     <div className="home-container">
-        <h1 className="title">Leftover Recipe Generator</h1>
+        <h1 className="title">Leftover Recipe Finder</h1>
 
         <p className="subtitle">
             Turn the ingredients you already have into delicious meals.
